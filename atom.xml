@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Satoshi's Blog]]></title>
+  <link href="http://hasegawasatoshi.github.io/atom.xml" rel="self"/>
+  <link href="http://hasegawasatoshi.github.io/"/>
+  <updated>2015-01-04T21:41:23+09:00</updated>
+  <id>http://hasegawasatoshi.github.io/</id>
+  <author>
+    <name><![CDATA[hasegawasatoshi]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[My First IoT]]></title>
+    <link href="http://hasegawasatoshi.github.io/blog/2015/01/04/my-first-iot/"/>
+    <updated>2015-01-04T20:30:51+09:00</updated>
+    <id>http://hasegawasatoshi.github.io/blog/2015/01/04/my-first-iot</id>
+    <content type="html"><![CDATA[<h1>ほげ</h1>
+
+<p>最近、IoT企業に転職したので、</p>
+
+<h2>ほげほげ</h2>
+
+<p>あああ</p>
+]]></content>
+  </entry>
+  
+</feed>
