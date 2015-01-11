@@ -4,7 +4,7 @@
   <title><![CDATA[Satoshi's Blog]]></title>
   <link href="http://hasegawasatoshi.github.io/atom.xml" rel="self"/>
   <link href="http://hasegawasatoshi.github.io/"/>
-  <updated>2015-01-12T00:05:14+09:00</updated>
+  <updated>2015-01-12T00:13:16+09:00</updated>
   <id>http://hasegawasatoshi.github.io/</id>
   <author>
     <name><![CDATA[hasegawasatoshi]]></name>
@@ -48,7 +48,7 @@
 <p>&ldquo;WICED Sense Kit&#8221;というデバイスが見つかるはずなので、[Service: 180A] - [Characteristic: 2A29] を選択すると、&#8221;Broadcom&#8221;という文字列が見つかるはずです。
 <img src="http://hasegawasatoshi.github.io/images/2015/01/04/lightblue1.png" title="Manufacturer Name String" alt="Manufacturer Name String"></p>
 
-<p>これらの&#8221;180A&#8221;や&#8221;2A29&#8221;といった４桁のUUIDはBluetoothの規格として定義されていて、<a href="https://developer.bluetooth.org/gatt/services/Pages/ServicesHome.aspx">Bluetoothの Developer site</a>で確認できます。</p>
+<p>これらの&#8221;180A&#8221;や&#8221;2A29&#8221;といった４桁のUUIDはBluetoothの規格として定義されていて、<a href="https://developer.bluetooth.org/gatt/services/Pages/ServicesHome.aspx">Bluetooth Developer site</a>で確認できます。</p>
 
 <p>見たところ、<a href="http://ja.broadcom.com/products/wiced/sense/">WICED Sense</a>が対応しているService/Characteristicは以下のもののようです。</p>
 
@@ -117,8 +117,12 @@ q
 </span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Unsubscribed</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Sensor Dataのフォーマットはクローズドのようなのでここには書きませんが、以下から入手できます。
-* <a href="http://community.broadcom.com/docs/DOC-1775">http://community.broadcom.com/docs/DOC-1775</a></p>
+<p>Sensor Dataのフォーマットはクローズドのようなのでここには書きませんが、以下から入手できます。</p>
+
+<ul>
+<li><a href="http://community.broadcom.com/docs/DOC-1775">http://community.broadcom.com/docs/DOC-1775</a></li>
+</ul>
+
 
 <p>アカウント登録が必要ですが、企業や大学のメールアドレスならすぐに承認されます。ただし、gmailなどのフリーなemailアドレスだと拒否されてしまいます。</p>
 
