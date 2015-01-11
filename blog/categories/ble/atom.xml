@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Satoshi's Blog]]></title>
-  <link href="http://hasegawasatoshi.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: ble | Satoshi's Blog]]></title>
+  <link href="http://hasegawasatoshi.github.io/blog/categories/ble/atom.xml" rel="self"/>
   <link href="http://hasegawasatoshi.github.io/"/>
   <updated>2015-01-11T23:54:45+09:00</updated>
   <id>http://hasegawasatoshi.github.io/</id>
@@ -72,47 +72,27 @@
 
 <p>&ldquo;Subscrib&#8221;ボタンを押すと以下のようなデータを取得できます。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Subscribed
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200C4B035B2F4DCF703290198FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200BED7CBE94A95F7032F019AFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052007F6482485AC9F90322019DFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x3468027227BC00
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200CC5F6790AC0CF4032B01A4FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200305DF834E518F9032901ADFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B00000100520071A29FA0AD24EF0320019CFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052006159577DF430F1031A01A6FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200781006543EE5F7032F01B1FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200C90EC3C2721AF7032301ACFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B00000100520043548F66DE24F403200195FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200770AA60AC130FA0321019CFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200554F7BAF093DF4032B01A4FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x3468027227BC00
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005300644A06F6B154F7031D01B5FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052004201EA9AAF5E05041F01ACFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052000846EC3E2069F0031C01A1FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200694342E31EA4F7032D0198FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Unsubscribed</span></code></pre></td></tr></table></div></figure>
-
+<pre><code>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Subscribed
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200C4B035B2F4DCF703290198FB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200BED7CBE94A95F7032F019AFB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052007F6482485AC9F90322019DFB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x3468027227BC00
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200CC5F6790AC0CF4032B01A4FB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200305DF834E518F9032901ADFB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B00000100520071A29FA0AD24EF0320019CFB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052006159577DF430F1031A01A6FB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200781006543EE5F7032F01B1FB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200C90EC3C2721AF7032301ACFB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B00000100520043548F66DE24F403200195FB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200770AA60AC130FA0321019CFB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200554F7BAF093DF4032B01A4FB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x3468027227BC00
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005300644A06F6B154F7031D01B5FB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052004201EA9AAF5E05041F01ACFB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052000846EC3E2069F0031C01A1FB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200694342E31EA4F7032D0198FB
+- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Unsubscribed
+</code></pre>
 
 <p>Sensor Dataのフォーマットはクローズドのようなのでここには書きませんが、以下から入手できます。
 * <a href="http://community.broadcom.com/docs/DOC-1775">http://community.broadcom.com/docs/DOC-1775</a></p>
