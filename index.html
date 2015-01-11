@@ -9,7 +9,7 @@
   <meta name="author" content="hasegawasatoshi">
 
   
-  <meta name="description" content="昨年末、IoT関連企業に転職したので、Raspberry PiとBLEタグで遊んでみようと思います。 入手したのはBroadcomのWICED Sense。これ一つに温度、湿度、気圧、ジャイロスコープ、加速度センサー、コンパスが内蔵されています。 購入は以下からできますが、マクニカの方は、 &hellip;">
+  <meta name="description" content="昨年末、IoT関連企業に転職したので、Raspberry PiとBLEタグで遊んでみようと思います。 入手したのはBroadcomのWICED Sense。これ一つに温度、湿度、気圧、ジャイロスコープ、加速度センサー、コンパスが内蔵されています。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -96,107 +96,14 @@
   <div class="entry-content"><p>昨年末、IoT関連企業に転職したので、Raspberry PiとBLEタグで遊んでみようと思います。</p>
 
 <p>入手したのはBroadcomの<a href="http://ja.broadcom.com/products/wiced/sense/">WICED Sense</a>。これ一つに温度、湿度、気圧、ジャイロスコープ、加速度センサー、コンパスが内蔵されています。
-<img src="images/2015/01/04/wiced_sense.jpg" alt="WICED Sense" /></p>
+<img src="/images/2015/01/04/wiced_sense.jpg" title="WICED Sense" alt="WICED Sense"></p>
 
-<p>購入は以下からできますが、マクニカの方は、現時点では売り切れのようです。</p>
-
-<ul>
-<li><a href="http://www.macnicaonline.com/SHOP/BCM9WICED_SENSE.html">http://www.macnicaonline.com/SHOP/BCM9WICED_SENSE.html</a></li>
-<li><a href="http://www.mouser.jp/ProductDetail/Broadcom/BCM9WICED_SENSE/?qs=sGAEpiMZZMvtrnhC60i%252bOrenFUWXz0qHGG1IdBRu48I%3d">http://www.mouser.jp/ProductDetail/Broadcom/BCM9WICED_SENSE/?qs=sGAEpiMZZMvtrnhC60i%252bOrenFUWXz0qHGG1IdBRu48I%3d</a></li>
-</ul>
-
-
-<p>Android/iPhone用のアプリが提供されていて、以下から入手できます。
-<img src="images/2015/01/04/wiced_sense_app.png" alt="WICED Sense" /></p>
-
-<ul>
-<li><a href="https://play.google.com/store/apps/details?id=com.broadcom.app.wicedsense">Andloid</a></li>
-<li><a href="https://itunes.apple.com/jp/app/wiced-sense/id908757577?mt=8">iPhone</a></li>
-</ul>
-
-
-<p>まずは、Macから接続してみましょう。<a href="https://itunes.apple.com/jp/app/lightblue/id639944780?mt=12">LightBlue</a>というアプリケーションを使います。</p>
-
-<p>&ldquo;WICED Sense Kit&#8221;というデバイスが見つかるはずなので、[Service: 180A] - [Characteristic: 2A29] を選択すると、&#8221;Broadcom&#8221;という文字列が見つかるはずです。
-<img src="images/2015/01/04/lightblue1.png" alt="Manufacturer Name String" /></p>
-
-<p>これらの&#8221;180A&#8221;や&#8221;2A29&#8221;といった４桁のUUIDはBluetoothの規格として定義されていて、<a href="https://developer.bluetooth.org/gatt/services/Pages/ServicesHome.aspx">Bluetoothの Developer site</a>で確認できます。</p>
-
-<p>見たところ、<a href="http://ja.broadcom.com/products/wiced/sense/">WICED Sense</a>が対応しているService/Characteristicは以下のもののようです。</p>
-
-<ul>
-<li><a href="https://developer.bluetooth.org/gatt/services/Pages/ServiceViewer.aspx?u=org.bluetooth.service.device_information.xml">0x180A: Device Information</a>
-
-<ul>
-<li><a href="https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.manufacturer_name_string.xml">0x2A29: Manufacturer Name String</a></li>
-<li><a href="https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.model_number_string.xml">0x2A24: Model Number String</a></li>
-<li><a href="https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.system_id.xml">0x2A23: System ID</a></li>
-</ul>
-</li>
-<li><a href="https://developer.bluetooth.org/gatt/services/Pages/ServiceViewer.aspx?u=org.bluetooth.service.battery_service.xml">0x180F: Battery Service</a>
-
-<ul>
-<li><a href="https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.battery_level.xml">0x2A19: Battery Level</a></li>
-</ul>
-</li>
-</ul>
-
-
-<p>一方、32桁のUUIDはデバイス開発者が独自に定義したものとなります。どうやら&#8221;33EF9113-3B55-413E-B553-FEA1EAADA459&#8221;がセンサーデータのようです。
-<img src="images/2015/01/04/lightblue1.png" alt="Senser Data" /></p>
-
-<p>&ldquo;Subscrib&#8221;ボタンを押すと以下のようなデータを取得できます。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Subscribed
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200C4B035B2F4DCF703290198FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200BED7CBE94A95F7032F019AFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052007F6482485AC9F90322019DFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x3468027227BC00
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200CC5F6790AC0CF4032B01A4FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200305DF834E518F9032901ADFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B00000100520071A29FA0AD24EF0320019CFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052006159577DF430F1031A01A6FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200781006543EE5F7032F01B1FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200C90EC3C2721AF7032301ACFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B00000100520043548F66DE24F403200195FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200770AA60AC130FA0321019CFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200554F7BAF093DF4032B01A4FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x3468027227BC00
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005300644A06F6B154F7031D01B5FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052004201EA9AAF5E05041F01ACFB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B0000010052000846EC3E2069F0031C01A1FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200694342E31EA4F7032D0198FB
-</span><span class='line'>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Unsubscribed</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Sensor Dataのフォーマットはクローズドのようなのでここには書きませんが、以下から入手できます。
-* <a href="http://community.broadcom.com/docs/DOC-1775">http://community.broadcom.com/docs/DOC-1775</a></p>
-
-<p>アカウント登録が必要ですが、企業や大学のメールアドレスならすぐに承認されます。ただし、gmailなどのフリーなemailアドレスだと拒否されてしまいます。</p>
-
-<p>というわけで、今回は<a href="http://ja.broadcom.com/products/wiced/sense/">WICED Sense</a>がどのようなSensor Dataを送ってくるかがわかりました。次回はRaspberry Piのセットアップを行いたいと思います。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/01/04/my-first-iot/">Read on &rarr;</a>
+    </footer>
   
 
 

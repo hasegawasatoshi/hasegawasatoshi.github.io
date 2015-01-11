@@ -93,7 +93,10 @@
 <div class="entry-content"><p>昨年末、IoT関連企業に転職したので、Raspberry PiとBLEタグで遊んでみようと思います。</p>
 
 <p>入手したのはBroadcomの<a href="http://ja.broadcom.com/products/wiced/sense/">WICED Sense</a>。これ一つに温度、湿度、気圧、ジャイロスコープ、加速度センサー、コンパスが内蔵されています。
-<img src="images/2015/01/04/wiced_sense.jpg" alt="WICED Sense" /></p>
+<img src="/images/2015/01/04/wiced_sense.jpg" title="WICED Sense" alt="WICED Sense"></p>
+
+<!-- more -->
+
 
 <p>購入は以下からできますが、マクニカの方は、現時点では売り切れのようです。</p>
 
@@ -104,7 +107,7 @@
 
 
 <p>Android/iPhone用のアプリが提供されていて、以下から入手できます。
-<img src="images/2015/01/04/wiced_sense_app.png" alt="WICED Sense" /></p>
+<img src="/images/2015/01/04/wiced_sense_app.png" title="WICED Sense" alt="WICED Sense"></p>
 
 <ul>
 <li><a href="https://play.google.com/store/apps/details?id=com.broadcom.app.wicedsense">Andloid</a></li>
@@ -115,7 +118,7 @@
 <p>まずは、Macから接続してみましょう。<a href="https://itunes.apple.com/jp/app/lightblue/id639944780?mt=12">LightBlue</a>というアプリケーションを使います。</p>
 
 <p>&ldquo;WICED Sense Kit&#8221;というデバイスが見つかるはずなので、[Service: 180A] - [Characteristic: 2A29] を選択すると、&#8221;Broadcom&#8221;という文字列が見つかるはずです。
-<img src="images/2015/01/04/lightblue1.png" alt="Manufacturer Name String" /></p>
+<img src="/images/2015/01/04/lightblue1.png" title="Manufacturer Name String" alt="Manufacturer Name String"></p>
 
 <p>これらの&#8221;180A&#8221;や&#8221;2A29&#8221;といった４桁のUUIDはBluetoothの規格として定義されていて、<a href="https://developer.bluetooth.org/gatt/services/Pages/ServicesHome.aspx">Bluetoothの Developer site</a>で確認できます。</p>
 
@@ -140,9 +143,9 @@
 
 
 <p>一方、32桁のUUIDはデバイス開発者が独自に定義したものとなります。どうやら&#8221;33EF9113-3B55-413E-B553-FEA1EAADA459&#8221;がセンサーデータのようです。
-<img src="images/2015/01/04/lightblue1.png" alt="Senser Data" /></p>
-
-<p>&ldquo;Subscrib&#8221;ボタンを押すと以下のようなデータを取得できます。</p>
+<img src="/images/2015/01/04/lightblue2.png" title="Senser Data" alt="Senser Data">
+q
+&ldquo;Subscrib&#8221;ボタンを押すと以下のようなデータを取得できます。</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
