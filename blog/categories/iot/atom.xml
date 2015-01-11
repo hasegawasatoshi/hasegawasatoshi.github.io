@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iot | Satoshi's Blog]]></title>
   <link href="http://hasegawasatoshi.github.io/blog/categories/iot/atom.xml" rel="self"/>
   <link href="http://hasegawasatoshi.github.io/"/>
-  <updated>2015-01-12T00:13:16+09:00</updated>
+  <updated>2015-01-12T00:15:03+09:00</updated>
   <id>http://hasegawasatoshi.github.io/</id>
   <author>
     <name><![CDATA[hasegawasatoshi]]></name>
@@ -71,9 +71,9 @@
 
 
 <p>一方、32桁のUUIDはデバイス開発者が独自に定義したものとなります。どうやら&#8221;33EF9113-3B55-413E-B553-FEA1EAADA459&#8221;がセンサーデータのようです。
-<img src="/images/2015/01/04/lightblue2.png" title="&lsquo;Senser Data&rsquo; &lsquo;Senser Data&rsquo;" >
-q
-&ldquo;Subscrib&#8221;ボタンを押すと以下のようなデータを取得できます。</p>
+<img src="/images/2015/01/04/lightblue2.png" title="&lsquo;Senser Data&rsquo; &lsquo;Senser Data&rsquo;" ></p>
+
+<p>&ldquo;Subscrib&#8221;ボタンを押すと以下のようなデータを取得できます。</p>
 
 <pre><code>- UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Subscribed
 - UUID 33EF9113-3B55-413E-B553-FEA1EAADA459 Notified Value: 0x0B000001005200C4B035B2F4DCF703290198FB
