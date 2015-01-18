@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: raspberry pi | Satoshi's Blog]]></title>
+  <link href="http://hasegawasatoshi.github.io/blog/categories/raspberry-pi/atom.xml" rel="self"/>
+  <link href="http://hasegawasatoshi.github.io/"/>
+  <updated>2015-01-18T21:20:11+09:00</updated>
+  <id>http://hasegawasatoshi.github.io/</id>
+  <author>
+    <name><![CDATA[hasegawasatoshi]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Setting up a Raspberry Pi]]></title>
+    <link href="http://hasegawasatoshi.github.io/blog/2015/01/17/setting-up-a-raspberry-pi/"/>
+    <updated>2015-01-17T23:45:41+09:00</updated>
+    <id>http://hasegawasatoshi.github.io/blog/2015/01/17/setting-up-a-raspberry-pi</id>
+    <content type="html"><![CDATA[<p>今回はRaspBerry Piののセットアップを行います。使用したのは<a href="http://jp.rs-online.com/web/p/processor-microcontroller-development-kits/8111284/">RrspBerry Pi B+</a>です。</p>
+
+<p>RaspBerry Piのセットアップに関してはいろいろな方が書かれているので今更感もありますが、無線LANのセットアップまで行いたいと思います。</p>
+
+<!-- more -->
+
+
+<p><a href="http://www.raspberrypi.org/downloads/">ダウンロードサイト</a>からOSイメージをダウンロードします。NOOBSというインストーラーもありますが、今回はOSを直接インストールします。ディストリビューションはDebianベースのRASPBIANを選びました。RPM派の人はFedoraベースのPIDORAでもよいと思います。</p>
+
+<p>OSイメージをダウンロードしてmicroSDに書き込むわけですが、今回はMacを使って書き込みます。</p>
+
+<p>まず、microSDをMacに差してマウントポイントを確認します。下記の例だと <code>/dev/disk5s1</code> が対象となるmicorSDです。</p>
+
+<pre><code>$ df -h
+Filesystem      Size   Used  Avail Capacity  iused   ifree %iused  Mounted on
+/dev/disk1     112Gi   99Gi   12Gi    89% 26085623 3237639   89%   /
+devfs          194Ki  194Ki    0Bi   100%      670       0  100%   /dev
+map -hosts       0Bi    0Bi    0Bi   100%        0       0  100%   /net
+map auto_home    0Bi    0Bi    0Bi   100%        0       0  100%   /home
+/dev/disk4s1    29Gi  1.4Gi   28Gi     5%   358216 7354538    5%   /Volumes/T
+/dev/disk5s1   3.7Gi  803Mi  2.9Gi    22%        0       0  100%   /Volumes/NO NAME
+</code></pre>
+
+<p>ディスクをアンマウントします。</p>
+
+<pre><code>$ sudo diskutil unmountDisk /dev/disk5
+Unmount of all volumes on disk5 was successful
+</code></pre>
+
+<p><code>dd</code> コマンドを使って書き込みます。microSDの書き込み性能にもよると思いますが、かなり時間がかかるので気長に待ちます。</p>
+
+<pre><code>$ sudo dd if=./2014-12-24-wheezy-raspbian.img of=/dev/disk5 bs=1m
+3125+0 records in
+3125+0 records out
+3276800000 bytes transferred in 4491.168493 secs (729610 bytes/sec)
+</code></pre>
+
+<p>Rrapberry PiにmicroSDを差して電源を入れるとOSが起動します。設定メニューが出るので初期設定を行います。目的次第なのですが、以下のように設定しました。</p>
+
+<ul>
+<li>[Expand Filesystem] を選択し、SDカードの全領域を使えるように拡張します。</li>
+<li>[Internationalisation Option] - [Change Locale] を選択し、ロケールの追加を行います。日本語を使う予定はないのですが、一応、[ja_JP.UTF-8]を追加しておきました。</li>
+<li>[Internatinalisation Option] - [Change Timezone] を選択し、タイムゾーンを選択します。[Asia] - [Tokyo] を選択しました。</li>
+<li>[Advanced Option] - [Memory Split] を選択し 64 → 16に 変更します。今回はGUIを使わないので、GPUへの割り当てを16MBに減らします。</li>
+</ul>
+
+
+<p>次に無線LANのセットアップを行います。おそらく、大抵の無線LANアダプターが使えると思いますが、BUFFALOの<a href="http://www.amazon.co.jp/gp/product/B003NSAMW2?psc=1&amp;redirect=true&amp;ref_=oh_aui_detailpage_o01_s00">WLI-UC-GNM</a>を使いました。</p>
+
+<p>まず、無線LANアダプターをUSBポートに差して認識していることを確認します。</p>
+
+<pre><code>Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp.
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp.
+Bus 001 Device 005: ID 0411:01a2 BUFFALO INC. (formerly MelCo., Inc.) WLI-UC-GNM Wireless LAN Adapter [Ralink RT8070]
+</code></pre>
+
+<p><code>wpa_passphrase</code> コマンドを用いてパスフェーズの暗号化を行います。</p>
+
+<pre><code>pi@raspberrypi ~ $ wpa_passphrase ${SSID} ${PASSPHRASE} 
+network={
+     ssid="${SSID}"
+     #psk="${PASSPHRASE}"
+     psk=55125564e034badc3177c3ae7fac2e4cf787a44af3d4b40873b55c42f071a733
+}
+</code></pre>
+
+<p>次に、生成された内容を <code>/etc/wpa_supplicant/wpa_supplicant.conf</code> に追加します。うちのアクセスポイントはWPA/WPA2 AESで接続するので、以下のようになりました。</p>
+
+<pre><code>ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+network={
+     ssid="${SSID}"
+     proto=RSN
+     key_mgmt=WPA-PSK
+     pairwise=CCMP
+     group=CCMP
+     psk=55125564e034badc3177c3ae7fac2e4cf787a44af3d4b40873b55c42f071a733
+}
+</code></pre>
+
+<p>続けて <code>/etc/network/interfaces</code> を変更します。</p>
+
+<pre><code>auto lo
+
+iface lo inet loopback
+iface eth0 inet dhcp
+
+allow-hotplug wlan0
+#iface wlan0 inet manual
+#wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+iface wlan0 inet dhcp
+wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+iface default inet dhcp
+</code></pre>
+
+<p>設定が完了したのでインタフェースを再起動します。</p>
+
+<pre><code>pi@raspberrypi ~ $ sudo ifup wlan0
+Internet Systems Consortium DHCP Client 4.2.2
+Copyright 2004-2011 Internet Systems Consortium.
+All rights reserved.
+For info, please visit https://www.isc.org/software/dhcp/
+
+Listening on LPF/wlan0/cc:e1:d5:15:84:27
+Sending on   LPF/wlan0/cc:e1:d5:15:84:27
+Sending on   Socket/fallback
+DHCPDISCOVER on wlan0 to 255.255.255.255 port 67 interval 6
+DHCPDISCOVER on wlan0 to 255.255.255.255 port 67 interval 15
+DHCPREQUEST on wlan0 to 255.255.255.255 port 67
+DHCPOFFER from 192.168.3.1
+DHCPACK from 192.168.3.1
+bound to 192.168.3.18 -- renewal in 41016 seconds.
+</code></pre>
+
+<p>最後にホスト名で <code>ssh</code> 接続できるように <code>avahi-daemon</code> をインストールします。</p>
+
+<pre><code>pi@raspberrypi ~ $ sudo apt-get update
+pi@raspberrypi ~ $ sudo apt-get install avahi-daemon
+</code></pre>
+
+<p>Macから <code>ping</code> が通ればOKです。</p>
+
+<pre><code>$ ping raspberrypi.local
+PING raspberrypi.local (192.168.3.17): 56 data bytes
+64 bytes from 192.168.3.17: icmp_seq=0 ttl=64 time=5.404 ms
+64 bytes from 192.168.3.17: icmp_seq=1 ttl=64 time=6.617 ms
+64 bytes from 192.168.3.17: icmp_seq=2 ttl=64 time=5.839 ms
+64 bytes from 192.168.3.17: icmp_seq=3 ttl=64 time=5.881 ms
+64 bytes from 192.168.3.17: icmp_seq=4 ttl=64 time=5.708 ms
+^C
+--- raspberrypi.local ping statistics ---
+5 packets transmitted, 5 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 5.404/5.890/6.617/0.400 ms
+</code></pre>
+
+<h3>References</h3>
+
+<ul>
+<li>超小型PC「Raspberry Pi」で夏休み自由課題: <a href="http://news.mynavi.jp/articles/2014/08/13/raspberry-pi/">http://news.mynavi.jp/articles/2014/08/13/raspberry-pi/</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>
