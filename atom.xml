@@ -4,7 +4,7 @@
   <title><![CDATA[Satoshi's Blog]]></title>
   <link href="http://hasegawasatoshi.github.io/atom.xml" rel="self"/>
   <link href="http://hasegawasatoshi.github.io/"/>
-  <updated>2015-01-18T21:20:11+09:00</updated>
+  <updated>2015-01-25T16:37:59+09:00</updated>
   <id>http://hasegawasatoshi.github.io/</id>
   <author>
     <name><![CDATA[hasegawasatoshi]]></name>
@@ -12,6 +12,309 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Using Bluetooth on Raspberry Pi]]></title>
+    <link href="http://hasegawasatoshi.github.io/blog/2015/01/25/using-bluethooth-on-raspberry-pi/"/>
+    <updated>2015-01-25T15:38:49+09:00</updated>
+    <id>http://hasegawasatoshi.github.io/blog/2015/01/25/using-bluethooth-on-raspberry-pi</id>
+    <content type="html"><![CDATA[<p>今回はRaspberry PiでBluetoothを使えるようにしたいと思います。</p>
+
+<p>Bluetoothのドングルは<a href="http://www.planex.co.jp/products/bt-micro4/">PLANEX の BT-Micro4</a>を使いました。BLEタグと接続するので、Bluetooth 4.0対応のものが必要です。</p>
+
+<!-- more -->
+
+
+<p>Bluethoothを扱うためにBluezをインストールします。<a href="http://stackoverflow.com/questions/24853597/ble-gatttool-cannot-connect-even-though-device-is-discoverable-with-hcitool-lesc">こちら</a>によるとBluezはソースから最新版を入れたほうがよさそうです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~ $ sudo apt-get install libusb-dev libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev
+</span><span class='line'>pi@raspberrypi ~ $ sudo wget https://www.kernel.org/pub/linux/bluetooth/bluez-5.27.tar.xz
+</span><span class='line'>pi@raspberrypi ~ $ sudo tar xvf bluez-5.27.tar.xz
+</span><span class='line'>pi@raspberrypi ~ $ cd bluez-5.27/
+</span><span class='line'>pi@raspberrypi ~/bluez-5.27 $ sudo LDFLAGS=-lrt./configure --disable-systemd
+</span><span class='line'>pi@raspberrypi ~/bluez-5.27 $ make
+</span><span class='line'>pi@raspberrypi ~/bluez-5.27 $ sudo make install</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>下記のようなエラーが<code>LDFLAG</code>に<code>-lrt</code>を付けてみてください。</p>
+
+<pre><code>/usr/bin/ld: profiles/health/mcap.o: undefined reference to symbol 'clock_getres@@GLIBC_2.4'
+//lib/arm-linux-gnueabihf/librt.so.1: error adding symbols: DSO missing from command line
+collect2: ld returned 1 exit status
+Makefile:4184: recipe for target 'tools/mcaptest' failed
+make[1]: *** [tools/mcaptest] Error 1
+Makefile:2648: recipe for target 'all' failed
+make: *** [all] Error 2
+</code></pre>
+
+<p>参考: <a href="http://www.forum-raspberrypi.de/Thread-raspbian-bluez-5-x-kann-nicht-erstellt-werden">http://www.forum-raspberrypi.de/Thread-raspbian-bluez-5-x-kann-nicht-erstellt-werden</a></p></blockquote>
+
+<p>まず、ドングルがUSB機器として認識しているかを確認します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~ $ lsusb
+</span><span class='line'>Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp.
+</span><span class='line'>Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+</span><span class='line'>Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp.
+</span><span class='line'>Bus 001 Device 006: ID 0a12:0001 Cambridge Silicon Radio, Ltd Bluetooth Dongle (HCI mode)
+</span><span class='line'>Bus 001 Device 005: ID 0411:01a2 BUFFALO INC. (formerly MelCo., Inc.) WLI-UC-GNM Wireless LAN Adapter [Ralink RT8070]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ちゃんと認識されました。</p>
+
+<p><code>hciconfig</code>を用いて状態を確認します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~ $ hciconfig
+</span><span class='line'>hci0:     Type: BR/EDR  Bus: USB
+</span><span class='line'>     BD Address: 00:1B:DC:06:0C:04  ACL MTU: 310:10  SCO MTU: 64:8
+</span><span class='line'>     DOWN
+</span><span class='line'>     RX bytes:547 acl:0 sco:0 events:27 errors:0
+</span><span class='line'>     TX bytes:384 acl:0 sco:0 commands:27 errors:0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上のように<code>Down</code>状態だったら起動します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~ $ sudo hciconfig hci0 up
+</span><span class='line'>pi@raspberrypi ~ $ hciconfig
+</span><span class='line'>hci0:     Type: BR/EDR  Bus: USB
+</span><span class='line'>     BD Address: 00:1B:DC:06:0C:04  ACL MTU: 310:10  SCO MTU: 64:8
+</span><span class='line'>     UP RUNNING
+</span><span class='line'>     RX bytes:1094 acl:0 sco:0 events:54 errors:0
+</span><span class='line'>     TX bytes:768 acl:0 sco:0 commands:54 errors:0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>WICED Senseの電源を入れ、スキャンします。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~ $ sudo hcitool lescan
+</span><span class='line'>LE Scan ...
+</span><span class='line'>00:10:18:01:07:F1 WICED Sense Kit
+</span><span class='line'>00:10:18:01:07:F1 (unknown)
+</span><span class='line'>00:10:18:01:07:F1 WICED Sense Kit
+</span><span class='line'>00:10:18:01:07:F1 (unknown)
+</span><span class='line'>... (snip) ...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>WICED Senseのアドレスが<code>00:10:18:01:07:F1</code>であることが分かりました。
+ひたすらログが出続けるのでCTRL-Cで止めます。</p>
+
+<p>実際に接続できるか確認してみましょう。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~ $ sudo hcitool lecc 00:10:18:01:07:F1
+</span><span class='line'>Connection handle 71</span></code></pre></td></tr></table></div></figure>
+
+
+<p>問題なさそうなので<code>gatttool</code>を使って、インタラクティブモードで接続してみます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~ $ sudo gatttool -b 00:10:18:01:07:F1 -I
+</span><span class='line'>[00:10:18:01:07:F1][LE]&gt; connect
+</span><span class='line'>Attempting to connect to 00:10:18:01:07:F1
+</span><span class='line'>Connection successful
+</span><span class='line'>[00:10:18:01:07:F1][LE]&gt; primary
+</span><span class='line'>Command Failed: Disconnected
+</span><span class='line'>[00:10:18:01:07:F1][LE]&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最初は接続できるものの、すぐに切断されてしまい、<code>primary</code>コマンドがエラーとなります。</p>
+
+<p>ノンインタラクティブモードなら大丈夫のようです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~ $ sudo gatttool -b 00:10:18:01:07:F1  --primary
+</span><span class='line'>attr handle = 0x0001, end grp handle = 0x0001 uuid: 00001801-0000-1000-8000-00805f9b34fb
+</span><span class='line'>attr handle = 0x0014, end grp handle = 0x0018 uuid: 00001800-0000-1000-8000-00805f9b34fb
+</span><span class='line'>attr handle = 0x0028, end grp handle = 0x002b uuid: 739298b6-87b6-4984-a5dc-bdc18b068985
+</span><span class='line'>attr handle = 0x004d, end grp handle = 0x0053 uuid: 0000180a-0000-1000-8000-00805f9b34fb
+</span><span class='line'>attr handle = 0x0061, end grp handle = 0x0063 uuid: 0000180f-0000-1000-8000-00805f9b34fb
+</span><span class='line'>attr handle = 0xff00, end grp handle = 0xff07 uuid: a86abc2d-d44c-442e-99f7-80059a873e36</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~ $ sudo gatttool -b 00:10:18:01:07:F1  --characteristics
+</span><span class='line'>handle = 0x0015, char properties = 0x02, char value handle = 0x0016, uuid = 00002a00-0000-1000-8000-00805f9b34fb
+</span><span class='line'>handle = 0x0017, char properties = 0x02, char value handle = 0x0018, uuid = 00002a01-0000-1000-8000-00805f9b34fb
+</span><span class='line'>handle = 0x0029, char properties = 0x12, char value handle = 0x002a, uuid = 33ef9113-3b55-413e-b553-fea1eaada459
+</span><span class='line'>handle = 0x004e, char properties = 0x02, char value handle = 0x004f, uuid = 00002a29-0000-1000-8000-00805f9b34fb
+</span><span class='line'>handle = 0x0050, char properties = 0x02, char value handle = 0x0051, uuid = 00002a24-0000-1000-8000-00805f9b34fb
+</span><span class='line'>handle = 0x0052, char properties = 0x02, char value handle = 0x0053, uuid = 00002a23-0000-1000-8000-00805f9b34fb
+</span><span class='line'>handle = 0x0062, char properties = 0x02, char value handle = 0x0063, uuid = 00002a19-0000-1000-8000-00805f9b34fb
+</span><span class='line'>handle = 0xff01, char properties = 0x18, char value handle = 0xff02, uuid = 1bd19c14-b78a-4e0f-aeb5-8e0352bac382
+</span><span class='line'>handle = 0xff04, char properties = 0x08, char value handle = 0xff05, uuid = 279f9dab-79be-4663-af1d-24407347af13
+</span><span class='line'>handle = 0xff06, char properties = 0x02, char value handle = 0xff07, uuid = 6aa5711b-0376-44f1-bca1-8647b48bdb55</span></code></pre></td></tr></table></div></figure>
+
+
+<p>切断されてしまう原因が分からないのですが、ノンインタラクティブモードで進めてみましょう。</p>
+
+<p><code>Manufacturer Name String</code>を取得してみます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~ $ sudo gatttool -b 00:10:18:01:07:F1  --char-read --handle=0x004f
+</span><span class='line'>Characteristic value/descriptor: 42 72 6f 61 64 63 6f 6d
+</span><span class='line'>pi@raspberrypi ~ $ echo "42 72 6f 61 64 63 6f 6d" | tr -d \ | xxd -r -p; echo ""
+</span><span class='line'>Broadcom</span></code></pre></td></tr></table></div></figure>
+
+
+<p>期待通り<code>Broadcom</code>という文字列が取得できました。</p>
+
+<p>では、本来の目的であるセンサー情報を取得してみます。<a href="http://stackoverflow.com/questions/15657007/bluetooth-low-energy-listening-for-notifications-indications-in-linux">ここ</a>を参考に、<code>notification</code>を受け取るために<code>0x0100</code>を書き込みます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo gatttool -b 00:10:18:01:07:F1 --char-write-req --handle=0x002b --value=0100 --listen
+</span><span class='line'>Characteristic value was written successfully
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 01 00 53 00 11 06 3d e9 d5 03 d6 03 a8 ff 56 fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 01 00 52 00 11 06 3d e9 d5 03 d9 03 9f ff 5b fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 02 00 53 00 11 06 3d e9 d5 03 ed 03 a1 ff 61 fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 01 00 52 00 11 06 3d e9 d5 03 d9 03 a1 ff 5d fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 01 00 53 00 11 06 3d e9 d5 03 df 03 a1 ff 59 fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 01 00 53 00 11 06 3d e9 d5 03 db 03 a0 ff 5d fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 01 00 53 00 11 06 3d e9 d5 03 e0 03 9e ff 51 fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 01 00 53 00 11 06 3d e9 d5 03 d6 03 a3 ff 52 fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 01 00 53 00 11 06 3d e9 d5 03 de 03 9a ff 61 fb
+</span><span class='line'>Notification handle = 0x002a value: 34 09 02 79 27 a8 00
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 02 00 52 00 11 06 3d e9 d5 03 e9 03 93 ff 54 fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 02 00 52 00 11 06 3d e9 d5 03 e0 03 a7 ff 5d fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 02 00 53 00 11 06 3d e9 d5 03 e0 03 9f ff 65 fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 02 00 53 00 11 06 3d e9 d5 03 e5 03 9a ff 5d fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 02 00 52 00 11 06 3d e9 d5 03 d3 03 9c ff 55 fb
+</span><span class='line'>Notification handle = 0x002a value: 0b 00 00 02 00 53 00 11 06 3d e9 d5 03 dc 03 9f ff 54 fb
+</span><span class='line'>Notification handle = 0x002a value: 0b ff ff 02 00 53 00 11 06 3d e9 d5 03 da 03 93 ff 5f fb</span></code></pre></td></tr></table></div></figure>
+
+
+<p>無事、センサーデータを取得できたのですが、やはい、１秒くらいで接続が切れてしまいます。</p>
+
+<p><code>hcidump</code>でパケットをキャプチャしてみたところ、WICED Senseから接続を切っているようですが。。。今日のところはここで手詰まりです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt; ACL data: handle 71 flags 0x02 dlen 26
+</span><span class='line'>    ATT: Handle notify (0x1b)
+</span><span class='line'>      handle 0x002a
+</span><span class='line'>      value 0x0b 0x00 0x00 0x01 0x00 0x53 0x00 0x11 0x06 0x3d 0xe9 0xd5 0x03 0xff 0x03 0x06 0x00 0x86 0xfb
+</span><span class='line'>&gt; ACL data: handle 71 flags 0x02 dlen 26
+</span><span class='line'>    ATT: Handle notify (0x1b)
+</span><span class='line'>      handle 0x002a
+</span><span class='line'>      value 0x0b 0x00 0x00 0x02 0x00 0x52 0x00 0x11 0x06 0x3d 0xe9 0xd5 0x03 0x13 0x04 0x05 0x00 0x95 0xfb
+</span><span class='line'>&lt; HCI Command: Disconnect (0x01|0x0006) plen 3
+</span><span class='line'>    handle 71 reason 0x13
+</span><span class='line'>    Reason: Remote User Terminated Connection
+</span><span class='line'>&gt; HCI Event: Command Status (0x0f) plen 4
+</span><span class='line'>    Disconnect (0x01|0x0006) status 0x00 ncmd 1
+</span><span class='line'>&gt; ACL data: handle 71 flags 0x02 dlen 26
+</span><span class='line'>    ATT: Handle notify (0x1b)
+</span><span class='line'>      handle 0x002a
+</span><span class='line'>      value 0x0b 0x00 0x00 0x02 0x00 0x53 0x00 0x11 0x06 0x3d 0xe9 0xd5 0x03 0x07 0x04 0x02 0x00 0x90 0xfb
+</span><span class='line'>&gt; HCI Event: Disconn Complete (0x05) plen 4
+</span><span class='line'>    status 0x00 handle 71 reason 0x16
+</span><span class='line'>    Reason: Connection Terminated by Local Host</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>References</h2>
+
+<ul>
+<li><a href="http://nwpct1.hatenablog.com/entry/2013/10/19/190029">http://nwpct1.hatenablog.com/entry/2013/10/19/190029</a></li>
+<li><a href="http://developer.mbed.org/users/kazu_zamasu/notebook/BLEforLinux/">http://developer.mbed.org/users/kazu_zamasu/notebook/BLEforLinux/</a></li>
+<li><a href="http://www.elinux.org/RPi_Bluetooth_LE">http://www.elinux.org/RPi_Bluetooth_LE</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Setting up a Raspberry Pi]]></title>
