@@ -4,7 +4,7 @@
   <title><![CDATA[Satoshi's Blog]]></title>
   <link href="http://hasegawasatoshi.github.io/atom.xml" rel="self"/>
   <link href="http://hasegawasatoshi.github.io/"/>
-  <updated>2015-01-25T16:37:59+09:00</updated>
+  <updated>2015-02-08T03:04:14+09:00</updated>
   <id>http://hasegawasatoshi.github.io/</id>
   <author>
     <name><![CDATA[hasegawasatoshi]]></name>
@@ -12,6 +12,150 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Setup cross compile for Raspberry Pi]]></title>
+    <link href="http://hasegawasatoshi.github.io/blog/2015/02/08/setup-cross-compile-for-raspberry-pi/"/>
+    <updated>2015-02-08T01:13:43+09:00</updated>
+    <id>http://hasegawasatoshi.github.io/blog/2015/02/08/setup-cross-compile-for-raspberry-pi</id>
+    <content type="html"><![CDATA[<p>C/C++のプログラムをRaspberry Pi上でコンパイルするのはさすがに時間がかかるので、PC上でクロスコンパイルできる環境を作りたいと思います。</p>
+
+<!-- more -->
+
+
+<p>まず、クロスコンパイル用の環境としてLinux環境を用意します。今回は仮想環境(Virtualbox)上で動くUbuntu 14.04を使いました。</p>
+
+<p>Raspberry Pi用のコンパイラは以下のGithubで公開されています。</p>
+
+<ul>
+<li><a href="https://github.com/raspberrypi/tools">https://github.com/raspberrypi/tools</a></li>
+</ul>
+
+
+<p>ツールを適当なディレクトリにクローンします。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo mkdir /opt/raspberrypi
+</span><span class='line'>$ cd /opt/raspberrypi/
+</span><span class='line'>$ sudo git clone git://github.com/raspberrypi/tools.git</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コンパイラが３種類入ってますが、<code>gcc-linaro-arm-linux-gnueabihf-</code>がRaspberry Piに最適化されたコンパイラです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>tools/
+</span><span class='line'>├── arm-bcm2708
+</span><span class='line'>│   ├── arm-bcm2708hardfp-linux-gnueabi
+</span><span class='line'>│   ├── arm-bcm2708-linux-gnueabi
+</span><span class='line'>│   ├── gcc-linaro-arm-linux-gnueabihf-raspbian
+</span><span class='line'>│   └── gcc-linaro-arm-linux-gnueabihf-raspbian-x64</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>gcc</code>の動作確認をしてみます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd /opt/raspberrypi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
+</span><span class='line'>$ ./arm-linux-gnueabihf-gcc -v
+</span><span class='line'>Using built-in specs.
+</span><span class='line'>COLLECT_GCC=./arm-linux-gnueabihf-gcc
+</span><span class='line'>COLLECT_LTO_WRAPPER=/opt/raspberrypi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/../libexec/gcc/arm-linux-gnueabihf/4.8.3/lto-wrapper
+</span><span class='line'>Target: arm-linux-gnueabihf
+</span><span class='line'>Configured with: /home/zhehe01/work/bzr/pi-build/builds/arm-linux-gnueabihf-raspbian-linux/.build/src/gcc-linaro-4.8-2014.03/configure --build=x86_64-build_unknown-linux-gnu --host=x86_64-build_unknown-linux-gnu --target=arm-linux-gnueabihf --prefix=/home/zhehe01/work/bzr/pi-build/builds/arm-linux-gnueabihf-raspbian-linux/install --with-sysroot=/home/zhehe01/work/bzr/pi-build/builds/arm-linux-gnueabihf-raspbian-linux/install/arm-linux-gnueabihf/libc --enable-languages=c,c++,fortran --disable-multilib --enable-multiarch --with-arch=armv6 --with-tune=arm1176jz-s --with-fpu=vfp --with-float=hard --with-pkgversion='crosstool-NG linaro-1.13.1+bzr2650 - Linaro GCC 2014.03' --with-bugurl=https://bugs.launchpad.net/gcc-linaro --enable-__cxa_atexit --enable-libmudflap --enable-libgomp --enable-libssp --with-gmp=/home/zhehe01/work/bzr/pi-build/builds/arm-linux-gnueabihf-raspbian-linux/.build/arm-linux-gnueabihf/build/static --with-mpfr=/home/zhehe01/work/bzr/pi-build/builds/arm-linux-gnueabihf-raspbian-linux/.build/arm-linux-gnueabihf/build/static --with-mpc=/home/zhehe01/work/bzr/pi-build/builds/arm-linux-gnueabihf-raspbian-linux/.build/arm-linux-gnueabihf/build/static --with-isl=/home/zhehe01/work/bzr/pi-build/builds/arm-linux-gnueabihf-raspbian-linux/.build/arm-linux-gnueabihf/build/static --with-cloog=/home/zhehe01/work/bzr/pi-build/builds/arm-linux-gnueabihf-raspbian-linux/.build/arm-linux-gnueabihf/build/static --with-libelf=/home/zhehe01/work/bzr/pi-build/builds/arm-linux-gnueabihf-raspbian-linux/.build/arm-linux-gnueabihf/build/static --enable-threads=posix --disable-libstdcxx-pch --enable-linker-build-id --enable-plugin --enable-gold --with-local-prefix=/home/zhehe01/work/bzr/pi-build/builds/arm-linux-gnueabihf-raspbian-linux/install/arm-linux-gnueabihf/libc --enable-c99 --enable-long-long --with-float=hard
+</span><span class='line'>Thread model: posix
+</span><span class='line'>gcc version 4.8.3 20140303 (prerelease) (crosstool-NG linaro-1.13.1+bzr2650 - Linaro GCC 2014.03)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>次にRaspberry Piのユーザランドを用意します。<code>rsync</code>でRaspberry Piから取得します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rsync -rlv --delete-after --safe-links \
+</span><span class='line'>     pi@$"Raspberry Pi's IP address":/{lib,usr} \
+</span><span class='line'>     /opt/raspberrypi/rootfs</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Raspberry Pi側で<code>apt-get update</code>や新しくパッケージをインストールする度に再取得する必要があるので、スクリプトにしておくよよいでしょう。</p>
+
+<p>コンパイラにパスを通して簡単なプログラムをコンパイルしてみます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#include &lt;stdio.h&gt;
+</span><span class='line'>
+</span><span class='line'>int main(int argc, char* argv[])
+</span><span class='line'>{
+</span><span class='line'>     printf("Hello!\n");
+</span><span class='line'>
+</span><span class='line'>     return 0;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$export RASPI_HOME="/opt/raspberrypi"
+</span><span class='line'>$export PATH=${RASPI_HOME}/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin:$PATH
+</span><span class='line'>$ arm-linux-gnueabihf-gcc -Wall hello.c -o hello</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>file</code>コマンドでARMようの実行ファイルが生成されたことがわかります。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ file hello
+</span><span class='line'>hello: ELF 32-bit LSB  executable, ARM, EABI5 version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.26, BuildID[sha1]=038067c75c7098b2ef9838d9ceb931f3c4d9b97a, not stripped</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ファイルをRaspberry Piにコピーします。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rsync -rlv --safe-links \
+</span><span class='line'>     ${HOME}/raspberrypi/ \
+</span><span class='line'>     pi@"Raspberry Pi's IP address":~/shared</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Raspberry Piで動作することが確認できました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pi@raspberrypi ~/shared $ ./hello
+</span><span class='line'>Hello!</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>References</h2>
+
+<ul>
+<li><a href="http://airwiki.ws.dei.polimi.it/index.php/Cross-compiling_for_the_RaspberryPi">http://airwiki.ws.dei.polimi.it/index.php/Cross-compiling_for_the_RaspberryPi</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Using Bluetooth on Raspberry Pi]]></title>
